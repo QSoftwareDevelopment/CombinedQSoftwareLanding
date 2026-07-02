@@ -1,26 +1,1075 @@
 @import "tailwindcss";
 
+/* Seamless cross-document hand-off between every page (entrance ⇄
+   Catch ⇄ Reputable). Same-origin full navigations cross-fade via the
+   View Transitions API; unsupported browsers just navigate normally. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: vtFade 0.32s var(--e-out) both; }
+  ::view-transition-new(root) { animation: vtFade 0.46s var(--e-out) reverse both; }
+}
+@keyframes vtFade { from { opacity: 1; } to { opacity: 0; } }
+
+/* ============================================================
+   Q SOFTWARE — combined entrance
+   The umbrella over two committed brands (Catch · Reputable).
+   The entrance is a near-black neutral stage; each brand keeps
+   its own world. Reputable's velvet theme below is scoped to
+   `.theme-reputable` so it never bleeds onto the entrance.
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Q Software umbrella — the neutral stage between the brands */
+  --q-bg:        oklch(0.085 0.008 270);
+  --q-bg-deep:   oklch(0.045 0.006 270);
+  --q-ink:       oklch(0.975 0.004 250);
+  --q-muted:     oklch(0.74 0.012 250);
+  --q-faint:     oklch(0.56 0.012 250);
+  --q-line:      oklch(0.30 0.012 270);
+
+  /* Brand signatures used on the entrance (Reputable = stone/ink/camel) */
+  --rep-crimson: oklch(0.255 0.008 75);  /* graphite ink */
+  --rep-gold:    oklch(0.475 0.060 64);  /* muted camel */
+  --rep-velvet:  oklch(0.955 0.004 95);  /* architectural stone */
+  --catch-green: oklch(0.585 0.155 150);
+  --catch-glow:  oklch(0.84 0.195 128);
+  --catch-paper: oklch(0.985 0.006 152);
+
+  --e-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --e-inout:  cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+/* ============================================================
+   REPUTABLE — "Velvet & Brass"
+   Drenched-dark hospitality brand. Crimson leads, brass accents,
+   deep velvet near-black surface. OKLCH throughout.
+   ============================================================ */
+
+:root {
+  /* Surfaces — cool architectural stone (light, not cream) */
+  --bg:          oklch(0.955 0.004 95);
+  --bg-deep:     oklch(0.928 0.005 95);
+  --surface:     oklch(0.992 0.0015 95);
+  --surface-2:   oklch(0.972 0.003 95);
+  --line:        oklch(0.875 0.005 95);
+  --line-soft:   oklch(0.912 0.004 95);
+
+  /* Ink — graphite (all tiers clear WCAG AA on stone) */
+  --ink:         oklch(0.255 0.006 75);
+  --ink-dim:     oklch(0.39 0.006 75);
+  --muted:       oklch(0.455 0.006 75);
+  --faint:       oklch(0.495 0.006 75);
+
+  /* Primary — graphite ink (the quiet CTA / emphasis) */
+  --primary:        oklch(0.255 0.008 75);
+  --primary-bright: oklch(0.33 0.008 75);
+  --primary-deep:   oklch(0.20 0.008 75);
+  --primary-wine:   oklch(0.15 0.006 75);
+
+  /* Accent — deep camel: where a reputation quietly shines (AA-safe as text) */
+  --gold:        oklch(0.495 0.070 62);
+  --gold-deep:   oklch(0.435 0.062 60);
+  --gold-soft:   oklch(0.71 0.050 70);
+
+  --rose:        oklch(0.66 0.045 55);
+
+  /* Positive — a restrained sage, only for rating / up signals */
+  --pos:         oklch(0.55 0.045 155);
+
+  --radius: 14px;
+  --maxw: 1200px;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-deep: var(--bg-deep);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-primary: var(--primary);
+  --color-primary-bright: var(--primary-bright);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-wine: var(--primary-wine);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-gold-soft: var(--gold-soft);
+  --color-rose: var(--rose);
+  --color-pos: var(--pos);
+
+  --font-display: var(--font-eb-garamond);
+  --font-sans: var(--font-schibsted);
+
+  --radius-card: var(--radius);
+
+  --ease-quint: var(--ease-out-quint);
+  --ease-expo: var(--ease-out-expo);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--line-soft);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth; /* native — responsive, no momentum-scroll lag */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Neutral umbrella stage — each brand paints its own world on top */
+  background: var(--q-bg);
+  color: var(--q-ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Reputable's stone world, scoped so it never touches the entrance */
+.theme-reputable {
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100svh;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--gold) 30%, transparent);
+  color: var(--ink);
+}
+
+/* Display type */
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.006em;
+  line-height: 1.04;
+}
+
+/* ---- Utilities ---------------------------------------------- */
+
+.container-x {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+/* Film grain overlay */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.022;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Quiet hairline */
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--line),
+    transparent
+  );
+}
+
+/* Text gradient is BANNED — emphasis via the gold solid only */
+.text-gold { color: var(--gold); }
+.text-primary { color: var(--primary-bright); }
+
+/* Soft elevation — quiet luxury uses light, neutral shadow, never colour glow */
+.glow-primary {
+  box-shadow:
+    0 1px 2px oklch(0.2 0 0 / 0.04),
+    0 18px 44px -22px oklch(0.2 0 0 / 0.16);
+}
+.glow-gold {
+  box-shadow:
+    0 1px 2px oklch(0.2 0 0 / 0.03),
+    0 16px 44px -24px oklch(0.5 0.06 66 / 0.20);
+}
+
+/* Eyebrow label (used as a DELIBERATE brand system: the brass index mark,
+   not a generic kicker on every section) */
+.index-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+.index-mark::before {
+  content: "";
+  width: 1.6rem;
+  height: 1px;
+  background: var(--gold-deep);
+  opacity: 0.7;
+}
+
+/* Buttons */
+.btn {
+  --b: var(--primary);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+  border-radius: 999px;
+  padding: 0.92rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out-quint),
+    box-shadow 0.28s var(--ease-out-quint), background 0.2s ease,
+    border-color 0.2s ease;
+  will-change: transform;
+}
+/* trailing-arrow nudge + tactile press (snappy micro-interactions) */
+.btn svg { transition: transform 0.24s var(--ease-out-quint); }
+.btn:hover svg { transform: translateX(3px); }
+.btn:active { transform: scale(0.972); }
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover svg { transform: none; }
+  .btn:active { transform: none; }
+}
+.btn-primary {
+  /* The quiet-luxury CTA: a graphite/ink button, soft neutral elevation */
+  color: oklch(0.97 0 0);
+  background: linear-gradient(180deg, oklch(0.305 0.008 75), oklch(0.205 0.008 75));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.14),
+    0 1px 2px oklch(0.2 0 0 / 0.12),
+    0 14px 30px -16px oklch(0.2 0 0 / 0.40);
+}
+.btn-primary:hover {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.18),
+    0 1px 2px oklch(0.2 0 0 / 0.14),
+    0 20px 46px -16px oklch(0.2 0 0 / 0.52);
+}
+.btn-ghost {
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+}
+.btn-ghost:hover {
+  background: color-mix(in oklch, var(--ink) 4%, transparent);
+  border-color: color-mix(in oklch, var(--ink) 28%, var(--line));
+}
+
+/* Card base — fine paper on stone, hairline + a whisper of elevation */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  box-shadow:
+    0 1px 2px oklch(0.2 0 0 / 0.03),
+    0 16px 38px -28px oklch(0.2 0 0 / 0.14);
+}
+
+/* Subtle stone deepening at the edges */
+.vignette {
+  background: radial-gradient(
+    120% 90% at 50% 0%,
+    transparent 55%,
+    color-mix(in oklch, var(--bg-deep) 55%, transparent) 100%
+  );
+}
+
+/* ---- Reveal system -----------------------------------------
+   Content is VISIBLE by default (SSR / no-JS / headless safe).
+   The `.js` class is added synchronously before paint, which arms
+   the hidden state; IntersectionObserver then adds `.is-in`. */
+.reveal {
+  transition:
+    opacity 0.55s var(--ease-out-expo),
+    transform 0.55s var(--ease-out-expo);
+}
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero load entrance — pure CSS, always settles visible (transform/opacity only) */
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-rise { animation: heroRise 0.62s var(--ease-out-expo) both; }
+
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+.float-in { animation: floatIn 0.8s var(--ease-out-expo) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js .reveal,
+  .js .reveal.is-in {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .hero-rise,
+  .float-in { animation: none !important; }
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--dur, 40s) linear infinite;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* Star shimmer */
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Data-viz bar grow (replays whenever the element mounts) */
+@keyframes growBar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.bar-grow {
+  transform-origin: left center;
+  animation: growBar 0.9s var(--ease-out-expo) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar-grow { animation: none; }
+}
+
+/* Caret blink for typing demo */
+@keyframes caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--gold);
+  animation: caret 1s step-end infinite;
+}
+
+/* Focus visibility */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Number ticker tabular */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* FAQ accordion (native <details>) */
+.rep-faq summary { list-style: none; }
+.rep-faq summary::-webkit-details-marker { display: none; }
+.rep-faq summary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.rep-faq__icon { transition: transform 0.45s var(--ease-out-quint), border-color 0.3s ease, background 0.3s ease; }
+.rep-faq details[open] .rep-faq__icon {
+  transform: rotate(135deg);
+  border-color: color-mix(in oklch, var(--gold) 50%, var(--line));
+  background: color-mix(in oklch, var(--gold) 10%, transparent);
+}
+.rep-faq details[open] .rep-faq__a { animation: faqIn 0.5s var(--ease-out-expo) both; }
+@keyframes faqIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rep-faq details[open] .rep-faq__a { animation: none; }
+  .rep-faq__icon { transition: none; }
+}
+
+/* ============================================================
+   Q SOFTWARE — THE ENTRANCE
+   A split stage between two committed brands. Cinematic load,
+   a stage that leans toward whichever brand you reach for, and
+   a brand-coloured exit that hands off to the chosen world.
+   ============================================================ */
+
+.entrance {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--q-bg-deep);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.entrance__stage {
+  position: relative;
+  display: flex;
+  height: 100svh;
+  width: 100%;
+  --seam: 50%;
+}
+/* Catch is the left panel, Reputable the right; the seam follows the lean */
+@media (min-width: 760px) {
+  .entrance__stage[data-active="catch"]     { --seam: 73.6%; }
+  .entrance__stage[data-active="reputable"] { --seam: 26.4%; }
+}
+
+/* ---- Panels ------------------------------------------------- */
+.panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  isolation: isolate;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  /* button reset (the whole panel is one accessible target) */
+  appearance: none;
+  border: 0;
+  font: inherit;
+  /* Bound each panel's layout + paint to its own box so a resize never
+     invalidates the rest of the document. */
+  contain: layout paint;
+  transition: flex-grow 0.55s var(--e-out);
+}
+
+/* The lean: stage tips toward the hovered/focused brand */
+@media (min-width: 760px) {
+  .entrance__stage[data-active="catch"] .panel--catch,
+  .entrance__stage[data-active="reputable"] .panel--reputable {
+    flex-grow: 1.62;
+  }
+  .entrance__stage[data-active="catch"] .panel--reputable,
+  .entrance__stage[data-active="reputable"] .panel--catch {
+    flex-grow: 0.58;
+  }
+  /* The quiet side recedes — its wordmark shrinks to fit the narrow column */
+  .entrance__stage[data-active="catch"] .panel--reputable .panel__wordmark,
+  .entrance__stage[data-active="reputable"] .panel--catch .panel__wordmark {
+    transform: scale(0.52);
+    opacity: 0.86;
+  }
+}
+
+/* The exit: the chosen panel swallows the stage */
+.entrance[data-leaving="catch"] .panel--catch,
+.entrance[data-leaving="reputable"] .panel--reputable {
+  flex-grow: 60;
+}
+.entrance[data-leaving="catch"] .panel--reputable,
+.entrance[data-leaving="reputable"] .panel--catch {
+  flex-grow: 0.0001;
+}
+.entrance[data-leaving] .panel { cursor: default; }
+
+/* ---- Scenes (crafted, per-brand imagery) -------------------- */
+.panel__scene {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  /* The clip layer carries the hover/exit scale — smoothly transitioned. */
+  --scl: 1.02;
+  transform: scale(var(--scl));
+  transition: transform 0.5s var(--e-out);
+  will-change: transform;
+}
+.panel:where(:hover, :focus-within, .is-active) .panel__scene { --scl: 1.05; }
+.entrance[data-leaving] .panel__scene { --scl: 1.12; transition: transform 0.55s var(--e-out); }
+/* The inner scene carries ONLY the pointer parallax (translate). No CSS
+   transition: the rAF lerp in BrandChooser is the single source of
+   smoothing, so the parallax tracks the cursor crisply instead of being
+   low-pass-filtered through a transition (which read as "floaty"). */
+.scene {
+  position: absolute;
+  inset: -9%;
+  --mx: 0px; --my: 0px;
+  transform: translate3d(var(--mx), var(--my), 0);
+  will-change: transform;
+}
+
+/* Reputable — architectural stone, calm gallery light */
+.panel--reputable { background: var(--rep-velvet); color: var(--ink); }
+.scene-rep {
+  background:
+    radial-gradient(120% 90% at 72% 14%, oklch(0.975 0.012 80 / 0.85), transparent 58%),
+    radial-gradient(95% 80% at 16% 98%, oklch(0.915 0.010 95 / 0.7), transparent 60%),
+    linear-gradient(180deg, oklch(0.972 0.004 95), oklch(0.928 0.006 95));
+}
+.scene-rep__glow {
+  position: absolute;
+  left: 64%; top: 24%;
+  width: min(46vw, 520px); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  /* Softness baked into the gradient falloff instead of an expensive
+     filter: blur — a radial gradient is already its own blur. */
+  background: radial-gradient(circle, oklch(0.72 0.05 72 / 0.15), oklch(0.72 0.05 72 / 0.05) 42%, transparent 74%);
+  animation: emberPulse 9s var(--e-inout) infinite;
+}
+/* The twinkling rating-stars are too lively for quiet luxury — the
+   canvas keeps a few near-silent motes instead. */
+.scene-rep__stars { display: none; }
+
+/* Catch — daylight, an emerald field, a signal that always answers */
+.panel--catch { background: var(--catch-paper); color: oklch(0.235 0.028 158); }
+.scene-catch {
+  background:
+    radial-gradient(110% 90% at 28% 20%, oklch(0.93 0.085 150 / 0.9), transparent 60%),
+    radial-gradient(120% 110% at 86% 92%, oklch(0.86 0.13 142 / 0.55), transparent 60%),
+    radial-gradient(90% 80% at 92% 8%, oklch(0.92 0.12 110 / 0.5), transparent 55%),
+    linear-gradient(170deg, oklch(0.99 0.006 152), oklch(0.955 0.018 152));
+}
+.scene-catch__glow {
+  position: absolute;
+  right: 8%; top: 30%;
+  width: min(44vw, 500px); aspect-ratio: 1;
+  /* Softness in the gradient, not a per-frame blur filter. */
+  background: radial-gradient(circle, oklch(0.84 0.195 128 / 0.46), oklch(0.84 0.195 128 / 0.16) 40%, transparent 72%);
+  animation: glowPulseB 6.5s var(--e-inout) infinite;
+}
+/* Freeze the ambient glow pulses while the stage is leaning or handing off —
+   one less thing repainting on the same frames the panels are resizing. */
+.entrance__stage:not([data-active="none"]) .scene-rep__glow,
+.entrance__stage:not([data-active="none"]) .scene-catch__glow,
+.entrance[data-leaving] .scene-rep__glow,
+.entrance[data-leaving] .scene-catch__glow { animation-play-state: paused; }
+/* Concentric "signal" rings — the call that's always answered */
+.scene-catch__rings { position: absolute; left: 50%; top: 50%; }
+.scene-catch__rings i {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 22px; height: 22px;
+  margin: -11px;
+  border-radius: 999px;
+  border: 1.5px solid oklch(0.55 0.15 150 / 0.5);
+  animation: signalRing 4.2s var(--e-out) var(--rd, 0s) infinite;
+}
+
+/* Inactive panel reads as the quieter half */
+.panel__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s var(--e-out);
+  /* Plain colour scrim (no backdrop-filter): a backdrop-filter re-samples
+     the moving panels behind it every frame of the lean — pure jank. */
+  background: oklch(0.04 0.006 270 / 0.5);
+}
+.entrance__stage[data-active="catch"] .panel--reputable .panel__veil,
+.entrance__stage[data-active="reputable"] .panel--catch .panel__veil { opacity: 1; }
+.panel--catch .panel__veil { background: oklch(0.16 0.01 200 / 0.34); }
+/* Reputable is a light panel — recede it with a soft stone scrim, not near-black */
+.panel--reputable .panel__veil { background: oklch(0.74 0.008 90 / 0.5); }
+
+/* ---- Panel content ----------------------------------------- */
+.panel__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 2rem;
+  transform: translateY(0);
+  transition: transform 0.5s var(--e-out);
+}
+.panel:where(:hover, :focus-within, .is-active) .panel__content { transform: translateY(-6px); }
+
+/* The kicker is each side's identity at rest — always visible,
+   brightens a touch as you lean in. */
+.panel__kicker {
+  font-size: clamp(0.84rem, 1.05vw, 1.02rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.86;
+  transition: opacity 0.35s var(--e-out);
+}
+.panel--reputable .panel__kicker { color: var(--rep-gold); }
+.panel--catch .panel__kicker { color: oklch(0.46 0.14 150); }
+.panel:where(:hover, :focus-within, .is-active) .panel__kicker { opacity: 1; }
+
+.panel__wordmark {
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  /* text-shadow rather than a filter layer — no extra raster to repaint
+     each frame as the panel resizes. */
+  text-shadow: 0 6px 22px oklch(0 0 0 / 0.14);
+  transition: transform 0.42s var(--e-out);
+}
+.panel--reputable .panel__wordmark {
+  font-family: var(--font-display), serif;
+  font-weight: 500;
+  font-size: clamp(2.6rem, 6.2vw, 5.4rem);
+  color: oklch(0.255 0.006 75);
+}
+.panel--catch .panel__wordmark {
+  font-family: var(--font-catch-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.7rem, 6.6vw, 5.8rem);
+  letter-spacing: -0.035em;
+  color: oklch(0.30 0.05 156);
+}
+.panel:where(:hover, :focus-within, .is-active) .panel__wordmark { transform: scale(1.035); }
+
+.panel__sub {
+  max-width: 30ch;
+  font-size: clamp(0.95rem, 1.1vw, 1.08rem);
+  line-height: 1.5;
+  opacity: 0.0;
+  transform: translateY(8px);
+  transition: opacity 0.38s var(--e-out) 0.02s, transform 0.38s var(--e-out) 0.02s;
+}
+.panel--reputable .panel__sub { color: var(--muted); }
+.panel--catch .panel__sub { color: oklch(0.44 0.026 158); }
+.panel:where(:hover, :focus-within, .is-active) .panel__sub { opacity: 1; transform: none; }
+
+/* Enter button — appears on lean, brand-coloured */
+.panel__enter {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.7rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.34s var(--e-out) 0.04s, transform 0.34s var(--e-out) 0.04s,
+    box-shadow 0.3s var(--e-out), background 0.3s ease;
+}
+.panel:where(:hover, :focus-within, .is-active) .panel__enter { opacity: 1; transform: none; }
+.panel__enter svg { transition: transform 0.4s var(--e-out); }
+.panel__enter:hover svg { transform: translateX(4px); }
+
+.panel--reputable .panel__enter {
+  color: oklch(0.97 0 0);
+  background: linear-gradient(180deg, oklch(0.305 0.008 75), oklch(0.205 0.008 75));
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.14),
+    0 14px 34px -16px oklch(0.2 0 0 / 0.42);
+}
+.panel--reputable .panel__enter:hover {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.18),
+    0 20px 48px -16px oklch(0.2 0 0 / 0.55);
+}
+.panel--catch .panel__enter {
+  color: oklch(0.99 0.01 150);
+  background: linear-gradient(180deg, oklch(0.56 0.155 150), oklch(0.46 0.14 152));
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.25),
+    0 16px 40px -18px oklch(0.52 0.15 152 / 0.7);
+}
+.panel--catch .panel__enter:hover {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3),
+    0 22px 56px -18px oklch(0.52 0.15 152 / 0.95);
+}
+
+/* ---- The seam between worlds (tracks the lean) -------------- */
+.entrance__divider {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--seam, 50%);
+  width: 1px;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    transparent,
+    oklch(0.35 0.01 90 / 0.16) 18%,
+    oklch(0.28 0.01 90 / 0.26) 50%,
+    oklch(0.35 0.01 90 / 0.16) 82%,
+    transparent);
+  transition: left 0.55s var(--e-out), opacity 0.5s var(--e-out);
+}
+.entrance[data-leaving] .entrance__divider { opacity: 0; }
+
+/* ---- Umbrella header + footer hint -------------------------- */
+/* Glass pill so the umbrella stays legible over both the bright
+   and the velvet half. */
+.entrance__top {
+  position: absolute;
+  top: clamp(1.25rem, 3.2vh, 2.3rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 1.05rem 0.5rem 0.55rem;
+  border-radius: 999px;
+  background: oklch(0.08 0.01 270 / 0.52);
+  border: 1px solid oklch(1 0 0 / 0.16);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  backdrop-filter: blur(16px) saturate(1.1);
+  box-shadow: 0 12px 44px -18px oklch(0 0 0 / 0.65);
+  transition: opacity 0.5s var(--e-out), transform 0.5s var(--e-out);
+}
+.entrance__q {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px; height: 27px;
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.07);
+  border: 1px solid oklch(1 0 0 / 0.12);
+  color: oklch(0.98 0.004 250);
+}
+.entrance__wordmark {
+  font-size: 0.76rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: oklch(0.97 0.004 250);
+  text-indent: 0.32em;
+}
+.entrance__dot {
+  width: 3px; height: 3px;
+  border-radius: 999px;
+  background: oklch(0.8 0.01 250);
+  opacity: 0.5;
+}
+.entrance__hint {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: oklch(0.8 0.012 250);
+}
+.entrance[data-leaving] .entrance__top {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-10px);
+}
+
+/* ---- Exit curtain ------------------------------------------- */
+.entrance__curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.66s var(--e-inout), opacity 0.4s linear 0.5s;
+}
+.entrance[data-leaving="catch"] .entrance__curtain {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  background: radial-gradient(120% 90% at 50% 40%, oklch(0.62 0.16 150), oklch(0.4 0.13 152));
+}
+.entrance[data-leaving="reputable"] .entrance__curtain {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  background: radial-gradient(120% 90% at 50% 40%, oklch(0.975 0.006 80), oklch(0.93 0.006 95));
+}
+
+/* ---- Quick intro (the doors open) --------------------------- */
+.q-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+.q-intro__half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  background: var(--q-bg-deep);
+  transition: transform 0.5s var(--e-inout);
+  will-change: transform;
+}
+.q-intro__half--l { left: 0; }
+.q-intro__half--r { right: 0; }
+.q-intro[data-phase="split"] .q-intro__half--l { transform: translateX(-100%); }
+.q-intro[data-phase="split"] .q-intro__half--r { transform: translateX(100%); }
+.q-intro__center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: 0;
+  transition: opacity 0.45s var(--e-out), transform 0.6s var(--e-out);
+}
+.q-intro[data-phase="split"] .q-intro__center {
+  opacity: 0;
+  transform: scale(1.08);
+}
+.q-intro__lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+}
+.q-intro__mark { width: 64px; height: 64px; color: oklch(0.97 0.004 250); }
+.q-intro__mark circle,
+.q-intro__mark path {
+  stroke-dasharray: var(--len, 70);
+  stroke-dashoffset: var(--len, 70);
+  animation: qDraw 0.5s var(--e-out) 0.06s forwards;
+}
+.q-intro__mark path { animation-delay: 0.26s; }
+.q-intro__word {
+  font-size: 0.82rem;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: oklch(0.9 0.006 250);
+  opacity: 0;
+  animation: qWordIn 0.42s var(--e-out) 0.34s forwards;
+}
+@keyframes qDraw { to { stroke-dashoffset: 0; } }
+@keyframes qWordIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.9; transform: none; } }
+
+/* ---- Magnetic custom cursor --------------------------------- */
+.q-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 40;
+  width: 0; height: 0;
+  pointer-events: none;
+  /* JS writes translate3d() here every frame (rAF-lerped). No transition on
+     transform → zero double-smoothing; the lerp alone shapes the motion. No
+     mix-blend-mode → the dot composites as a flat GPU layer instead of
+     re-blending against the moving backdrop each frame. */
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity 0.3s ease;
+  will-change: transform;
+}
+.q-cursor__ring {
+  position: absolute;
+  left: 0; top: 0;
+  width: 24px; height: 24px;
+  border-radius: 999px;
+  border: 1.6px solid oklch(0.32 0.008 250 / 0.5);
+  background: transparent;
+  /* centred on the pointer; the grow is a composited scale, never layout */
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.34s var(--e-out), background 0.34s var(--e-out),
+    border-color 0.34s var(--e-out);
+  will-change: transform;
+}
+.q-cursor[data-grow="1"] .q-cursor__ring {
+  transform: translate(-50%, -50%) scale(2.35);
+  background: oklch(0.32 0.01 250 / 0.06);
+  border-color: oklch(0.32 0.008 250 / 0.28);
+}
+.q-cursor[data-hidden="1"] { opacity: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .entrance.has-cursor,
+  .entrance.has-cursor .panel { cursor: none; }
+}
+@media not all and (hover: hover) {
+  .q-cursor { display: none; }
+}
+
+.entrance :focus-visible {
+  outline: 2px solid oklch(0.95 0.02 200);
+  outline-offset: -6px;
+  border-radius: 6px;
+}
+
+/* ---- Load choreography (pure CSS, always settles visible) --- */
+@keyframes entrancePanelIn {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes entranceContentRise {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes entranceDividerDraw {
+  from { opacity: 0; clip-path: inset(50% 0 50% 0); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+@keyframes entranceFadeDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes emberPulse {
+  0%, 100% { opacity: 0.65; transform: translate(-50%, -50%) scale(1); }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.08); }
+}
+@keyframes glowPulseB {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.09); }
+}
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.7); }
+  50%      { opacity: 1;   transform: scale(1.15); }
+}
+@keyframes signalRing {
+  0%   { width: 22px; height: 22px; margin: -11px; opacity: 0.55; }
+  100% { width: 78vmin; height: 78vmin; margin: -39vmin; opacity: 0; }
+}
+
+/* Apply load animation. Panels reveal from the seam outward. */
+.entrance .panel__scene { animation: entrancePanelIn 0.6s var(--e-out) both; }
+.entrance .panel--catch .panel__content { animation: entranceContentRise 0.5s var(--e-out) 0.12s both; }
+.entrance .panel--reputable .panel__content { animation: entranceContentRise 0.5s var(--e-out) 0.18s both; }
+.entrance .entrance__divider { animation: entranceDividerDraw 0.6s var(--e-out) 0.05s both; }
+.entrance .entrance__top { animation: entranceFadeDown 0.5s var(--e-out) 0.28s both; }
+
+/* ---- Mobile: two stacked half-stages ----------------------- */
+@media (max-width: 759px) {
+  .entrance__stage { flex-direction: column; }
+  .panel { flex: 1 1 0; }
+  .entrance[data-leaving="catch"] .panel--catch,
+  .entrance[data-leaving="reputable"] .panel--reputable { flex-grow: 60; }
+  .entrance__divider {
+    top: 50%; bottom: auto; left: 0; right: 0;
+    width: 100%; height: 1px;
+    transform: none;
+    background: linear-gradient(90deg, transparent,
+      oklch(0.3 0.01 90 / 0.22) 50%, transparent);
+  }
+  .panel__content { gap: 1.1rem; padding: 1.5rem; }
+  .panel__sub, .panel__kicker { opacity: 0.92; transform: none; }
+  .panel__enter { opacity: 1; transform: none; }
+  .panel__wordmark { font-size: clamp(2.4rem, 13vw, 3.4rem); }
+  .entrance__hint { display: none; }
+}
+
+/* ---- Back-to-chooser control (lives on each product page) --- */
+.q-back {
+  position: fixed;
+  z-index: 60;
+  top: clamp(0.9rem, 2vh, 1.4rem);
+  left: clamp(0.9rem, 2.4vw, 1.6rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 42px;
+  padding: 0 0.95rem 0 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid currentColor;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: transform 0.4s var(--e-out), background 0.3s ease, box-shadow 0.4s ease, opacity 0.3s ease;
+  opacity: 0.82;
+}
+.q-back:hover { opacity: 1; transform: translateX(-2px); }
+.q-back svg { transition: transform 0.4s var(--e-out); }
+.q-back:hover svg { transform: translateX(-3px); }
+.q-back__q {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrance .panel__scene,
+  .entrance .panel__content,
+  .entrance .entrance__divider,
+  .entrance .entrance__top,
+  .scene-rep__glow, .scene-catch__glow,
+  .scene-rep__stars span, .scene-catch__rings i,
+  .panel { animation: none !important; }
+  .entrance .entrance__divider { opacity: 1; }
+  .panel__kicker, .panel__sub, .panel__enter { opacity: 1 !important; transform: none !important; }
+  .panel__scene, .panel__content, .panel__wordmark { transition: none !important; }
+  .entrance__curtain { transition: opacity 0.2s linear !important; }
+}
+
+/* ============================================================
+   Micro-interactions + conversion polish
+   ============================================================ */
+
+/* Interactive cards — a snappy GPU-only hover lift */
+.card-i {
+  transition: transform 0.28s var(--ease-out-quint),
+    box-shadow 0.28s var(--ease-out-quint), border-color 0.28s ease;
+}
+@media (hover: hover) {
+  .card-i:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in oklch, var(--gold) 26%, var(--line-soft));
+    box-shadow:
+      0 1px 2px oklch(0.2 0 0 / 0.04),
+      0 28px 54px -30px oklch(0.2 0 0 / 0.22);
+  }
+}
+
+/* A quiet rating chip (social proof) */
+.rating-stars { display: inline-flex; gap: 2px; color: var(--gold); }
+
+/* Mobile sticky CTA — keep the primary action one tap away */
+.sticky-cta {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem clamp(1rem, 5vw, 1.25rem);
+  padding-bottom: max(0.7rem, env(safe-area-inset-bottom));
+  background: color-mix(in oklch, var(--surface) 90%, transparent);
+  border-top: 1px solid var(--line-soft);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 -8px 30px -18px oklch(0.2 0 0 / 0.28);
+  transform: translateY(115%);
+  transition: transform 0.42s var(--ease-out-quint);
+}
+.sticky-cta[data-show="1"] { transform: translateY(0); }
+@media (min-width: 768px) { .sticky-cta { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-i, .card-i:hover { transition: none; transform: none; }
+  .sticky-cta { transition: opacity 0.2s linear; }
 }

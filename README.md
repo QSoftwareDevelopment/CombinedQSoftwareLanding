@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Q Software — Combined Landing Page
 
-## Getting Started
+One front door for two products. A cinematic split-screen **entrance** lets a
+visitor choose between Q Software's two tools, each of which keeps its own,
+fully distinct brand world:
 
-First, run the development server:
+- **Catch** — the AI receptionist that answers every call, books every
+  appointment, and texts back the ones you miss in four seconds.
+  _(emerald, light-mode-first, Bricolage + Hanken Grotesk)_
+- **Reputable** — the growth engine for local & hospitality reputation:
+  reviews, social, trends and competitor intelligence in one place.
+  _(velvet & brass, drenched dark, Gloock + Schibsted Grotesk)_
+
+## Routes
+
+| Path         | What it is                                                              |
+| ------------ | ----------------------------------------------------------------------- |
+| `/`          | The **entrance** — a premium split stage that leans toward whichever brand you reach for, with a cinematic load and a brand-coloured exit hand-off. |
+| `/reputable` | The full Reputable landing (Next.js / Motion / Lenis).                  |
+| `/catch`     | The full Catch landing — a self-contained static page under `public/catch`, served via a rewrite. |
+
+Every product page carries a consistent **"Q Software" back breadcrumb** in its
+nav that returns to the entrance.
+
+## How it fits together
+
+- `app/page.tsx` → `components/chooser/BrandChooser.tsx` — the entrance.
+- `app/reputable/*` — the Reputable app, scoped to a `.theme-reputable` wrapper
+  so its velvet world never bleeds onto the entrance.
+- `public/catch/index.html` — the Catch page, kept verbatim for full fidelity;
+  the entrance hand-off, asset paths, and back breadcrumb are wired in.
+- Entrance design system lives at the bottom of `app/globals.css`
+  (`.entrance`, `.panel`, the crafted `.scene-*` brand scenes, the exit curtain).
+
+All motion has a `prefers-reduced-motion` fallback.
+
+## Develop
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000).
