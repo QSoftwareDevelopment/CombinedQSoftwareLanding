@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowR } from "./icons";
+import { SIGNUP_URL } from "./cta";
 
 /**
  * A quiet mobile-only sticky CTA. On phones the nav's trial button is tucked
@@ -38,7 +39,7 @@ export default function StickyCTA() {
         <span className="block text-[0.72rem] text-faint">14-day free trial</span>
       </div>
       <a
-        href="#pricing"
+        href={SIGNUP_URL}
         className="btn btn-primary !px-5 !py-3 text-[0.92rem]"
         tabIndex={show ? 0 : -1}
       >

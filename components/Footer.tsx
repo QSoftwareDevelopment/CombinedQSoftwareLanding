@@ -1,30 +1,31 @@
 import { Logo } from "./ui";
+import { SIGNUP_URL, LOGIN_URL } from "./cta";
 
 const COLUMNS = [
   {
-    title: "Platform",
+    title: "Product",
     links: [
-      { label: "Reviews", href: "#pillars" },
-      { label: "Social Playbook", href: "#pillars" },
-      { label: "Trends", href: "#pillars" },
-      { label: "Insights", href: "#pillars" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "Inside Reputable", href: "#inside" },
+      { label: "Social Playbook", href: "#playbook" },
+      { label: "Reviews & replies", href: "#products" },
       { label: "How it works", href: "#how" },
       { label: "Pricing", href: "#pricing" },
-      { label: "qsoftware.ca", href: "#top" },
+      { label: "FAQ", href: "#faq" },
     ],
   },
   {
-    title: "Legal",
+    title: "Q Software",
     links: [
-      { label: "Privacy", href: "#top" },
-      { label: "Terms", href: "#top" },
-      { label: "Contact", href: "#top" },
+      { label: "Why Reputable", href: "#why" },
+      { label: "Catch — AI receptionist", href: "/catch" },
+      { label: "Choose a product", href: "/" },
+    ],
+  },
+  {
+    title: "Get started",
+    links: [
+      { label: "Start free trial", href: SIGNUP_URL },
+      { label: "Sign in", href: LOGIN_URL },
+      { label: "Contact us", href: "mailto:info@qsoftware.ca" },
     ],
   },
 ];
@@ -62,7 +63,12 @@ export default function Footer() {
           <p className="text-[0.84rem] text-faint">
             © {new Date().getFullYear()} Reputable — by Q Software. All rights reserved.
           </p>
-          <p className="text-[0.84rem] text-faint">qsoftware.ca</p>
+          <a
+            href="mailto:info@qsoftware.ca"
+            className="text-[0.84rem] text-faint transition-colors hover:text-ink"
+          >
+            info@qsoftware.ca
+          </a>
         </div>
       </div>
     </footer>

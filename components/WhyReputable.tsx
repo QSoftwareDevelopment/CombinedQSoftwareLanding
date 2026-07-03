@@ -1,6 +1,7 @@
 import { Reveal } from "./Reveal";
 import { IndexMark } from "./ui";
 import { Check, ArrowR } from "./icons";
+import { SIGNUP_URL } from "./cta";
 
 const WITHOUT = [
   "Five review tabs — and replies that never get written",
@@ -99,7 +100,7 @@ export default function WhyReputable() {
                 walk-in is worth, and we don’t charge a thing for 14 days.
               </p>
             </div>
-            <a href="#pricing" className="btn btn-primary shrink-0 !px-7 !py-4 text-[1rem]">
+            <a href={SIGNUP_URL} className="btn btn-primary shrink-0 !px-7 !py-4 text-[1rem]">
               Start free trial
               <ArrowR className="h-[18px] w-[18px]" />
             </a>

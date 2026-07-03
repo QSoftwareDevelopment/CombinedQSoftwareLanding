@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { EB_Garamond, Schibsted_Grotesk, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 
-/* Reputable's display — a calm heritage serif (quiet luxury) */
+/* Reputable's display — a calm heritage serif (quiet luxury).
+   Only weight 500 is ever rendered (.font-display); listing more would
+   preload font files the page never uses. */
 const garamond = EB_Garamond({
-  weight: ["400", "500", "600"],
+  weight: ["500"],
   subsets: ["latin"],
   variable: "--font-eb-garamond",
   display: "swap",
@@ -16,9 +18,9 @@ const schibsted = Schibsted_Grotesk({
   display: "swap",
 });
 
-/* Catch's display — used for its wordmark on the entrance */
+/* Catch's display — used only for its wordmark on the entrance (weight 800) */
 const bricolage = Bricolage_Grotesque({
-  weight: ["600", "700", "800"],
+  weight: ["800"],
   subsets: ["latin"],
   variable: "--font-catch-display",
   display: "swap",
@@ -58,6 +60,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
+  alternates: {
+    canonical: "/",
   },
 };
 

@@ -1,6 +1,7 @@
 import { Reveal } from "./Reveal";
 import { Magnetic } from "./ui";
 import { ArrowR } from "./icons";
+import { SIGNUP_URL } from "./cta";
 import {
   GoogleMark,
   YelpMark,
@@ -43,7 +44,7 @@ export default function FinalCTA() {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3.5">
-              <Magnetic href="#top" className="btn btn-primary !px-8 !py-4 text-[1.02rem]">
+              <Magnetic href={SIGNUP_URL} className="btn btn-primary !px-8 !py-4 text-[1.02rem]">
                 Start free trial
                 <ArrowR className="h-[18px] w-[18px]" />
               </Magnetic>

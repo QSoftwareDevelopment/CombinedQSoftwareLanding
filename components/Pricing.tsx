@@ -1,6 +1,7 @@
 import { Reveal } from "./Reveal";
 import { IndexMark, Magnetic } from "./ui";
 import { Check, ArrowR, Star } from "./icons";
+import { SIGNUP_URL } from "./cta";
 
 const INCLUDED = [
   "All 5 review platforms in one inbox",
@@ -69,7 +70,7 @@ export default function Pricing() {
                 </div>
                 <p className="mt-2 text-[0.9rem] text-gold">Starts with a 14-day free trial</p>
 
-                <Magnetic href="#top" className="btn btn-primary mt-7 w-full !py-4 text-[1rem]">
+                <Magnetic href={SIGNUP_URL} className="btn btn-primary mt-7 w-full !py-4 text-[1rem]">
                   Start free trial
                   <ArrowR className="h-[18px] w-[18px]" />
                 </Magnetic>

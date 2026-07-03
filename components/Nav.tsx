@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Logo } from "./ui";
 import { ArrowR } from "./icons";
+import { SIGNUP_URL, LOGIN_URL } from "./cta";
 
 const LINKS = [
-  { label: "Playbook", href: "#top" },
+  { label: "Playbook", href: "#playbook" },
   { label: "Features", href: "#products" },
   { label: "How it works", href: "#how" },
   { label: "Pricing", href: "#pricing" },
@@ -15,30 +16,49 @@ const LINKS = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [active, setActive] = useState<string>("");
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let raf = 0;
+    // Section offsets are cached and only re-measured when the document
+    // grows/shrinks — no layout reads in the steady-state scroll frame.
+    let offsets: { href: string; top: number }[] = [];
+    let measuredHeight = 0;
+
+    const measure = () => {
+      measuredHeight = document.documentElement.scrollHeight;
+      offsets = LINKS.flatMap((l) => {
+        const el = document.querySelector<HTMLElement>(l.href);
+        return el
+          ? [{ href: l.href, top: el.getBoundingClientRect().top + window.scrollY }]
+          : [];
+      });
+    };
+
     const update = () => {
       raf = 0;
       const y = window.scrollY;
-      setScrolled(y > 24);
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? Math.min(1, y / max) : 0);
+      const doc = document.documentElement.scrollHeight;
+      if (doc !== measuredHeight) measure();
 
-      // scroll-spy: the last section whose top has passed the threshold
+      // scroll progress: direct DOM write, never a React render
+      const max = doc - window.innerHeight;
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${max > 0 ? Math.min(1, y / max) : 0})`;
+      }
+
+      // these change rarely; React bails out when the value is unchanged
+      setScrolled(y > 24);
       const line = y + 140;
       let current = "";
-      for (const l of LINKS) {
-        const el = document.querySelector(l.href);
-        if (el && (el as HTMLElement).offsetTop <= line) current = l.href;
-      }
+      for (const o of offsets) if (o.top <= line) current = o.href;
       setActive(current);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
+    measure();
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
@@ -51,6 +71,9 @@ export default function Nav() {
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   return (
@@ -112,12 +135,12 @@ export default function Nav() {
 
           <div className="hidden items-center gap-3 md:flex">
             <a
-              href="#pricing"
+              href={LOGIN_URL}
               className="text-[0.95rem] text-muted transition-colors hover:text-ink"
             >
               Sign in
             </a>
-            <a href="#pricing" className="btn btn-primary !py-2.5 !px-5 text-[0.92rem]">
+            <a href={SIGNUP_URL} className="btn btn-primary !py-2.5 !px-5 text-[0.92rem]">
               Start free trial
               <ArrowR className="h-4 w-4" />
             </a>
@@ -152,11 +175,12 @@ export default function Nav() {
 
         {/* scroll progress */}
         <div
+          ref={progressRef}
           aria-hidden
           className={`h-px origin-left bg-gradient-to-r from-gold-deep to-gold transition-opacity duration-500 ${
             scrolled ? "opacity-100" : "opacity-0"
           }`}
-          style={{ transform: `scaleX(${progress})` }}
+          style={{ transform: "scaleX(0)" }}
         />
       </div>
 
@@ -185,13 +209,16 @@ export default function Nav() {
                 </motion.a>
               ))}
               <a
-                href="#pricing"
+                href={SIGNUP_URL}
                 onClick={() => setOpen(false)}
                 className="btn btn-primary mt-6 w-full !py-4"
               >
                 Start free trial
                 <ArrowR className="h-4 w-4" />
               </a>
+              <p className="mt-3 text-center text-[0.82rem] text-faint">
+                14-day free trial · no card charged today
+              </p>
             </div>
           </motion.div>
         )}

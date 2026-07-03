@@ -55,15 +55,37 @@ function PlatformBadge({ platform }: { platform: Review["platform"] }) {
 export default function HeroPreview() {
   const reduce = useReducedMotion();
   const [idx, setIdx] = useState(0);
-  const [typed, setTyped] = useState(reduce ? REVIEWS[0].reply.length : 0);
+  // SSR / no-JS renders the full reply — the demo never gates content on JS.
+  const [typed, setTyped] = useState(REVIEWS[0].reply.length);
   const [posted, setPosted] = useState(false);
+  // The demo only runs while it's actually on screen; off-screen it pauses so
+  // it never spends frames (or React renders) while the visitor reads below.
+  const [inView, setInView] = useState(false);
+  const started = useRef(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || !("IntersectionObserver" in window)) {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([e]) => setInView(e.isIntersecting),
+      { threshold: 0.25 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     if (reduce) {
       setTyped(REVIEWS[idx].reply.length);
       return;
     }
+    if (!inView) return;
+
     const review = REVIEWS[idx];
     let i = 0;
     setTyped(0);
@@ -74,8 +96,9 @@ export default function HeroPreview() {
       timers.current.push(t);
     };
 
-    // small lead-in before typing
-    const startDelay = 650;
+    // small lead-in before typing (shorter on the very first run)
+    const startDelay = started.current ? 650 : 350;
+    started.current = true;
 
     function typeNext() {
       i += 1;
@@ -94,12 +117,12 @@ export default function HeroPreview() {
       timers.current.forEach(clearTimeout);
       timers.current = [];
     };
-  }, [idx, reduce]);
+  }, [idx, reduce, inView]);
 
   const review = REVIEWS[idx];
 
   return (
-    <div className="relative">
+    <div ref={rootRef} className="relative">
       {/* Floating accent — momentum chip (top-right) */}
       <div
         style={{ animationDelay: "0.9s" }}

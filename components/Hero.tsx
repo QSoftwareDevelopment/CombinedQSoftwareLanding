@@ -1,13 +1,7 @@
 import type { CSSProperties } from "react";
 import { ArrowR, Check, PlaybookGlyph } from "./icons";
-
-const PLAYBOOK_STEPS = [
-  "Pick a trend that fits your business",
-  "Get the concept & angle, in your voice",
-  "Follow the exact shot list — with examples",
-  "Captions & hooks, written for you",
-  "Review, then post — you’re always in control",
-];
+import { SIGNUP_URL } from "./cta";
+import HeroPreview from "./HeroPreview";
 
 const INCLUDES = ["Reviews & replies", "Social Playbook", "Trends", "Competitors"];
 
@@ -15,7 +9,7 @@ const d = (delay: number): CSSProperties => ({ animationDelay: `${delay}s` });
 
 export default function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pb-20 pt-36 sm:pt-44 lg:pb-28">
+    <section id="top" className="relative overflow-hidden pb-24 pt-36 sm:pt-44 lg:pb-32">
       {/* a single, calm architectural grid — no animated glows */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 vignette" />
@@ -32,7 +26,7 @@ export default function Hero() {
       </div>
 
       <div className="container-x">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.04fr_0.96fr] lg:gap-16">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.04fr_0.96fr] lg:gap-16">
           {/* ---- The pitch ---- */}
           <div>
             <span
@@ -75,7 +69,7 @@ export default function Hero() {
             </ul>
 
             <div style={d(0.42)} className="hero-rise mt-9 flex flex-wrap items-center gap-3.5">
-              <a href="#pricing" className="btn btn-primary !px-7 !py-4 text-[1rem]">
+              <a href={SIGNUP_URL} className="btn btn-primary !px-7 !py-4 text-[1rem]">
                 Start free trial
                 <ArrowR className="h-[18px] w-[18px]" />
               </a>
@@ -85,48 +79,13 @@ export default function Hero() {
             </div>
 
             <p style={d(0.48)} className="hero-rise mt-4 text-[0.82rem] text-faint">
-              14-day free trial · no charge today · cancel anytime
+              14-day free trial · no card charged today · cancel anytime
             </p>
           </div>
 
-          {/* ---- The flagship, made tangible ---- */}
+          {/* ---- The product, working (live reviews-inbox demo) ---- */}
           <div style={d(0.2)} className="hero-rise">
-            <div className="card relative overflow-hidden p-6 sm:p-8">
-              <div className="mb-6 flex items-center justify-between">
-                <span className="inline-flex items-center gap-2.5">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[color-mix(in_oklch,var(--gold)_14%,var(--surface-2))] text-gold">
-                    <PlaybookGlyph className="h-5 w-5" />
-                  </span>
-                  <span className="leading-tight">
-                    <span className="block text-[0.92rem] font-medium text-ink">
-                      Matcha cold foam
-                    </span>
-                    <span className="block text-[0.74rem] text-faint">This week’s trend · campaign</span>
-                  </span>
-                </span>
-                <span className="rounded-full bg-[color-mix(in_oklch,var(--gold)_12%,transparent)] px-2.5 py-1 text-[0.72rem] font-semibold text-gold-deep tabular">
-                  5 steps
-                </span>
-              </div>
-
-              <ol className="space-y-3.5">
-                {PLAYBOOK_STEPS.map((s, i) => (
-                  <li key={i} className="flex items-start gap-3.5">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[color-mix(in_oklch,var(--gold)_16%,transparent)] text-[0.72rem] font-semibold text-gold-deep tabular">
-                      {i + 1}
-                    </span>
-                    <span className="text-[0.95rem] leading-snug text-ink-dim">{s}</span>
-                  </li>
-                ))}
-              </ol>
-
-              <div className="mt-6 flex items-center gap-2.5 border-t border-line-soft pt-5 text-[0.86rem]">
-                <Check className="h-4 w-4 text-pos" />
-                <span className="text-muted">
-                  Ready to post in about <span className="text-ink">ten minutes</span> — no guesswork.
-                </span>
-              </div>
-            </div>
+            <HeroPreview />
           </div>
         </div>
       </div>

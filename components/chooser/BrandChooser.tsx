@@ -2,9 +2,27 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useReducedMotion } from "motion/react";
 
 type Brand = "catch" | "reputable";
+
+/* Lightweight reduced-motion check — keeps the whole motion library out of
+   the entrance bundle (this hook was its only import here). Initialized
+   synchronously so the intro/cursor effects see the right value on their
+   very first run. */
+function useReducedMotion() {
+  const [reduce, setReduce] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const on = (e: MediaQueryListEvent) => setReduce(e.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return reduce;
+}
 
 const COPY = {
   catch: {
@@ -42,9 +60,19 @@ export default function BrandChooser() {
     mxt: 0, myt: 0, mxv: 0, myv: 0,           // parallax: target / current
   });
 
-  // Warm both destinations so the hand-off is instant.
+  // Warm both destinations so the hand-off is instant. Reputable goes through
+  // the router cache; Catch is a static page, so a <link rel="prefetch"> puts
+  // its HTML in the browser cache before the full navigation.
   useEffect(() => {
     router.prefetch("/reputable");
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.href = "/catch";
+    link.as = "document";
+    document.head.appendChild(link);
+    return () => {
+      link.remove();
+    };
   }, [router]);
 
   // Deep-link a pre-leaned side, e.g. /?focus=catch
@@ -59,7 +87,10 @@ export default function BrandChooser() {
 
   // A quick one-time intro
   useEffect(() => {
-    if (reduce) return;
+    if (reduce) {
+      setIntro(null);
+      return;
+    }
     let seen = false;
     try {
       seen = sessionStorage.getItem("q-intro-seen") === "1";

@@ -1,6 +1,8 @@
 import RevealManager from "@/components/RevealManager";
+import SmoothScroll from "@/components/SmoothScroll";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import Playbook from "@/components/Playbook";
 import Products from "@/components/Products";
 import WhyReputable from "@/components/WhyReputable";
 import HowItWorks from "@/components/HowItWorks";
@@ -14,9 +16,11 @@ export default function ReputablePage() {
   return (
     <>
       <RevealManager />
+      <SmoothScroll />
       <Nav />
       <main>
         <Hero />
+        <Playbook />
         <Products />
         <WhyReputable />
         <HowItWorks />
